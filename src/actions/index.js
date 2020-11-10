@@ -1,4 +1,11 @@
 import jsonPlaceholder from '../apis/jsonPlaceholder';
+import _ from 'lodash';
+
+
+export const fetchPostsAndUsers = () => async dispatch => {
+  // await fetch posts before dispatch list
+ await dispatch(fetchPosts());
+}
 
 export const fetchPosts = () => {
 
@@ -10,11 +17,15 @@ export const fetchPosts = () => {
 };
 
 
-export const fetchUser = (id) => {
-  return async (dispatch) => {
+//lodash momize helper funtion to stop user fetch running multipul times when alredy fethced
+
+export const fetchUser = (id) => dispatch => {
+  _fetchUser(id, dispatch);
+  };
+
+const _fetchUser = _.memoize( async (id,dispatch) => {
     const reponce = await jsonPlaceholder.get(`/users/${id}`);
     dispatch({type: 'FETCH_USER', payload: reponce.data})
-  }
-};
+});
 
 
